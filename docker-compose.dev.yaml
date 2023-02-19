@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  database:
+    image: mariadb:10.5
+    container_name: database
+    ports:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: nestjs_password
+      MYSQL_DATABASE: nestjs_database
+  api:
+    image: nestjs-boilerplate
+    container_name: nestjs-api
+    ports:
+      - "4000:4000"
+    depends_on:
+      - database
+    env_file: 
+      - .env.development
