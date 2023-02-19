@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/health/database')
+  getDatabaseHello(): Promise<string> {
+    return this.appService.showTables();
+  }
 }
