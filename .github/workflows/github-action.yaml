@@ -1,31 +1,51 @@
 on:
   push:
-    branches:
-      - main
-      - master
 
-name: Github Action
+name: Github Action for ECR image push
+
+env:
+  ECR_REGISTRY: 873251151111.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: nestjs-boilerplate
+  CODEDEPLOY_APP_NAME: $ECR_REPOSITORY
 
 jobs:
-  npm-build:
-    name: npm build check
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Use Node.js 16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build
-  docker-build:
-    name: Docker build check
+  docker-build-and-push:
+    name: Docker build and push
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      - run: docker build . -t nestjs-boilerplate
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build and Push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
+      - name: Make Tar File
+        run: tar -cpvzf ./$GITHUB_SHA.tgz *
+        shell: bash
+      - name: Upload Code on AWS S3
+        run: |
+          aws s3 cp \
+            --region ap-northeast-2 \
+            ./$GITHUB_SHA.tgz s3://
+      - name: AWS Codedeploy
+        run: aws deploy create-deployment \
+              --application-name ${{ env.CODEDEPLOY_APP_NAME }} \
+              --file-exists-behavior OVERWRITE \
+              --deployment-config-name CodeDeployDefault.OneAtATime \
+              --deployment-group-name ??? \
+              --s3-location bucket= ??? \
+              --github-location repository=${GITHUB_REPOSITORY},commitId=${GITHUB_SHA}
