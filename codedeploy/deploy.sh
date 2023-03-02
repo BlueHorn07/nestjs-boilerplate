@@ -14,5 +14,9 @@ aws ecr get-login-password --region ap-northeast-2 | \
 docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest
 docker image tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REPOSITORY:latest
 
-docker-compose version
-docker-compose -f docker-compose.prod.yaml up -d
+docker run -d -p 4000:4000 $ECR_REPOSITORY:latest
+
+# docker-compose version
+# docker-compose -f docker-compose.prod.yaml up -d
+
+docker image prune -f
