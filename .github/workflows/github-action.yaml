@@ -42,10 +42,11 @@ jobs:
             --region ap-northeast-2 \
             ./$GITHUB_SHA.tgz s3://bluehorn-codedeploy/nestjs-boilerplate/$GITHUB_SHA.tgz
       - name: AWS Codedeploy
-        run: aws deploy create-deployment \
-              --application-name nestjs-boilerplate \
-              --file-exists-behavior OVERWRITE \
-              --deployment-config-name CodeDeployDefault.OneAtATime \
-              --deployment-group-name nestjs-boilerplate-codedeploy-group \
-              --s3-location bucket=blurhon-codedeploy,bundleType=tgz,key=nestjs-boilerplate/$GITHUB_SHA \
-              --github-location repository=$GITHUB_REPOSITORY,commitId=$GITHUB_SHA
+        run: |
+          aws deploy create-deployment \
+            --application-name nestjs-boilerplate \
+            --file-exists-behavior OVERWRITE \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --deployment-group-name nestjs-boilerplate-codedeploy-group \
+            --s3-location bucket=blurhon-codedeploy,bundleType=tgz,key=nestjs-boilerplate/$GITHUB_SHA \
+            --github-location repository=$GITHUB_REPOSITORY,commitId=$GITHUB_SHA
