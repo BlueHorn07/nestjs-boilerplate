@@ -12,7 +12,8 @@ services:
       - --character-set-server=utf8mb4 # 한글 인코딩
       - --collation-server=utf8mb4_unicode_ci # 한글 인코딩
   api:
-    image: nestjs-boilerplate
+    build:
+      context: .
     container_name: nestjs-api
     ports:
       - "4000:4000"
