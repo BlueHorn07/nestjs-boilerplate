@@ -7,14 +7,17 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserCreateDto, UserUpdateDto } from './user.dto';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiBody({ type: UserCreateDto })
   createUser(@Body() dto: UserCreateDto) {
     return this.userService.save(dto);
   }
@@ -30,6 +33,7 @@ export class UserController {
   }
 
   @Put(':uuid')
+  @ApiBody({ type: UserUpdateDto })
   getUserById(@Param('uuid') uuid: string, @Body() dto: UserUpdateDto) {
     return this.userService.update(uuid, dto);
   }
