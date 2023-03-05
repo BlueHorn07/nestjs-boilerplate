@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { UserType } from './user.type';
 
-@Entity()
+@Entity({ name: 'user' })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
@@ -19,7 +19,7 @@ export class UserEntity {
   id: string;
 
   @Column({ nullable: false })
-  password: string;
+  encrypted_password: string;
 
   @Column({ nullable: false })
   crypto_salt: string;

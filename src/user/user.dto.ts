@@ -4,15 +4,15 @@ export class UserCreateDto {
   readonly email: string;
   readonly id: string;
   readonly password: string;
-  readonly name: string;
-  readonly userType: UserType;
+  readonly nickname: string;
+  readonly user_type: UserType;
 }
 
 export class UserUpdateDto {
   readonly email: string;
   readonly id: string;
-  readonly name: string;
-  readonly userType: UserType;
+  readonly nickname: string;
+  readonly user_type: UserType;
 }
 
 export class UserPasswordUpdateDto {
