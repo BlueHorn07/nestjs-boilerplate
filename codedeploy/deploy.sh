@@ -15,7 +15,7 @@ docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest
 docker image tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REPOSITORY:latest
 
 docker-compose version
-docker-compose -f docker-compose.dev.yaml up -d
+docker-compose -f docker-compose.staging.yaml up -d
 
 docker image prune -f
 
