@@ -14,14 +14,6 @@ aws ecr get-login-password --region ap-northeast-2 | \
 docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest
 docker image tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REPOSITORY:latest
 
-whoami
-
-which docker
-cd /usr/local/bin
-cd $WORKDIR
-
-which docker-compose
-
 docker-compose version
 docker-compose -f docker-compose.dev.yaml up -d
 

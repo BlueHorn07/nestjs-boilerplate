@@ -6,7 +6,6 @@ name: Github Action for ECR image push
 env:
   ECR_REGISTRY: 873251151111.dkr.ecr.ap-northeast-2.amazonaws.com
   ECR_REPOSITORY: nestjs-boilerplate
-  S3_BUCKET: bluehorn-codedeploy
   CODEDEPLOY_APP_NAME: $ECR_REPOSITORY
 
 jobs:
@@ -39,15 +38,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
-      - name: Make Tar File
-        run: tar -cpvzf ./$GITHUB_SHA.tgz *
-        shell: bash
-      - name: Upload Code on AWS S3
-        run: |
-          aws s3 cp \
-            --region ap-northeast-2 \
-            ./$GITHUB_SHA.tgz \
-            s3://${{ env.S3_BUCKET }}/nestjs-boilerplate/$GITHUB_SHA.tgz
       - name: AWS Codedeploy
         run: |
           aws deploy create-deployment \
@@ -56,5 +46,3 @@ jobs:
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --deployment-group-name nestjs-boilerplate-codedeploy-group \
             --github-location repository=$GITHUB_REPOSITORY,commitId=$GITHUB_SHA
-
-# --s3-location bucket=${{ env.S3_BUCKET }},bundleType=tgz,key=nestjs-boilerplate/$GITHUB_SHA.tgz \
