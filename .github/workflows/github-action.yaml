@@ -6,6 +6,7 @@ name: Github Action for ECR image push
 env:
   ECR_REGISTRY: 873251151111.dkr.ecr.ap-northeast-2.amazonaws.com
   ECR_REPOSITORY: nestjs-boilerplate
+  S3_BUCKET: bluehorn-codedeploy
   CODEDEPLOY_APP_NAME: $ECR_REPOSITORY
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          platform: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -46,13 +47,14 @@ jobs:
           aws s3 cp \
             --region ap-northeast-2 \
             ./$GITHUB_SHA.tgz \
-            s3://bluehorn-codedeploy/nestjs-boilerplate/$GITHUB_SHA.tgz
+            s3://${{ env.S3_BUCKET }}/nestjs-boilerplate/$GITHUB_SHA.tgz
       - name: AWS Codedeploy
         run: |
           aws deploy create-deployment \
             --application-name nestjs-boilerplate \
             --file-exists-behavior OVERWRITE \
             --deployment-config-name CodeDeployDefault.OneAtATime \
-            --deployment-group-name nestjs-boilerplate-codedeploy-group \           
-            --s3-location bucket=bluehorn-codedeploy,bundleType=tgz,key=nestjs-boilerplate/$GITHUB_SHA.tgz \
+            --deployment-group-name nestjs-boilerplate-codedeploy-group \
             --github-location repository=$GITHUB_REPOSITORY,commitId=$GITHUB_SHA
+
+# --s3-location bucket=${{ env.S3_BUCKET }},bundleType=tgz,key=nestjs-boilerplate/$GITHUB_SHA.tgz \
