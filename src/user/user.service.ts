@@ -19,7 +19,7 @@ export class UserService {
     return this.userRepo.find();
   }
 
-  findById(uuid: string) {
+  findByUuid(uuid: string) {
     return this.userRepo.findOneBy({ uuid: uuid });
   }
 
