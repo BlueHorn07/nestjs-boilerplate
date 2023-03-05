@@ -50,7 +50,8 @@ jobs:
         run: |
           aws s3 cp \
             --region ap-northeast-2 \
-            ./$GITHUB_SHA.tgz s3://bluehorn-codedeploy/nestjs-boilerplate/$GITHUB_SHA.tgz
+            ./$GITHUB_SHA.tgz \
+            s3://bluehorn-codedeploy/nestjs-boilerplate/$GITHUB_SHA.tgz
       - name: AWS Codedeploy
         run: |
           aws deploy create-deployment \
@@ -58,5 +59,6 @@ jobs:
             --file-exists-behavior OVERWRITE \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --deployment-group-name nestjs-boilerplate-codedeploy-group \           
-# --s3-location bucket=bluehorn-codedeploy,bundleType=tgz,key=nestjs-boilerplate/$GITHUB_SHA.tgz
             --github-location repository=$GITHUB_REPOSITORY,commitId=$GITHUB_SHA
+
+# --s3-location bucket=bluehorn-codedeploy,bundleType=tgz,key=nestjs-boilerplate/$GITHUB_SHA.tgz
