@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   api:
-    image: nestjs-boilerplate
+    image: nestjs-boilerplate:latest
     ports:
       - "4000:4000"
     env_file:
