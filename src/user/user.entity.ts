@@ -18,10 +18,10 @@ export class UserEntity {
   @Column({ nullable: false })
   id: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   encrypted_password: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   crypto_salt: string;
 
   @Column({ nullable: false })
